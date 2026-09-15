@@ -1,11 +1,18 @@
 Requisitos do Projeto
 
 1. Objetivo
+
    Criar um site rápido para realização de simulados de legislação de trânsito, utilizando questões focadas nos tópicos que o usuário precisa estudar.
+
 2. Público-alvo
+
    Estudante candidato à cnh
+
 3. Escopo do MVP
 
+- Apresentar uma tela inicial para seleção do tópico do simulado.
+- Disponibilizar os tópicos Placas, Pontuação e PPD como opções selecionáveis.
+- Ao selecionar um tópico, o sistema deverá iniciar o simulado correspondente.
 - Iniciar o simulado.
 - Apresentar as 10 questões, uma por vez, com quatro alternativas e apenas uma resposta correta.
 - Permitir a seleção de uma alternativa antes de avançar para a próxima questão.
@@ -14,15 +21,19 @@ Requisitos do Projeto
 - Apresentar o resultado ao finalizar, com número de acertos e porcentagem.
 - Permitir visualizar as respostas corretas após a finalização.
 
-4. Fluxo do usuário
-   -1. O usuário inicia o simulado.
-   -2. O sistema apresenta a primeira questão.
-   -3. O usuário seleciona uma alternativa.
-   -4. O usuário avança para a próxima questão.
-   -5. O processo se repete até a décima questão.
-   -6. Na décima questão, o usuário seleciona uma alternativa e finaliza o simulado.
-   -7. O sistema apresenta o resultado.
-   -8. O usuário pode visualizar as respostas corretas.
+4. Fluxo do
+
+-1. O usuário acessa a tela inicial.
+-2. O sistema apresenta os tópicos Placas, Pontuação e PPD.
+-3. O usuário seleciona um tópico.
+-4. O sistema inicia o simulado correspondente.
+-5. O sistema apresenta a primeira questão.
+-6. O usuário seleciona uma alternativa.
+-7. O usuário avança para a próxima questão.
+-8. O processo se repete até a décima questão.
+-9. Na décima questão, o usuário seleciona uma alternativa e finaliza o simulado.
+-10.O sistema apresenta o resultado.
+-11.O usuário pode visualizar as respostas corretas.
 
 5. Regras de negócio
 
