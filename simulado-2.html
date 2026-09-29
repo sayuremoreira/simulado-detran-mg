@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulado Detran-MG</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        color: #222;
+        min-height: 100vh;
+      }
+
+      header {
+        background-color: #222;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      header h1 {
+        font-size: 24px;
+      }
+
+      main {
+        width: 90%;
+        max-width: 800px;
+        margin: 30px auto;
+      }
+
+      .tela {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .inicio {
+        text-align: center;
+      }
+
+      .inicio h2 {
+        margin-bottom: 15px;
+      }
+
+      .inicio p {
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+
+      button {
+        border: none;
+        border-radius: 6px;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn-principal {
+        background-color: #222;
+        color: white;
+      }
+
+      .btn-principal:hover {
+        background-color: #444;
+      }
+
+      .oculto {
+        display: none;
+      }
+
+      .progresso {
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .tema {
+        display: inline-block;
+        background-color: #eee;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 13px;
+        margin-bottom: 15px;
+      }
+
+      .pergunta {
+        font-size: 20px;
+        line-height: 1.5;
+        margin-bottom: 25px;
+      }
+
+      .alternativas {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 25px;
+      }
+
+      .alternativa {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        color: #222;
+      }
+
+      .alternativa:hover {
+        background-color: #eaeaea;
+      }
+
+      .alternativa.selecionada {
+        background-color: #ddd;
+        border: 2px solid #222;
+      }
+
+      .mensagem {
+        color: #b00020;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
+
+      .resultado {
+        text-align: center;
+      }
+
+      .resultado h2 {
+        margin-bottom: 20px;
+      }
+
+      .resultado-numero {
+        font-size: 42px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+
+      .resultado p {
+        margin-bottom: 10px;
+      }
+
+      .revisao {
+        margin-top: 30px;
+        text-align: left;
+      }
+
+      .questao-revisao {
+        border-top: 1px solid #ddd;
+        padding: 20px 0;
+      }
+
+      .questao-revisao h3 {
+        margin-bottom: 10px;
+      }
+
+      .resposta-usuario {
+        margin-top: 10px;
+      }
+
+      .resposta-correta {
+        margin-top: 5px;
+        font-weight: bold;
+      }
+
+      .correta {
+        color: green;
+      }
+
+      .incorreta {
+        color: #b00020;
+      }
+
+      @media (max-width: 600px) {
+        main {
+          width: 94%;
+          margin: 20px auto;
+        }
+
+        .tela {
+          padding: 20px;
+        }
+
+        header h1 {
+          font-size: 20px;
+        }
+
+        .pergunta {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Simulado Detran-MG</h1>
+    </header>
+
+    <main>
+      <!-- TELA INICIAL -->
+      <section id="tela-inicio" class="tela inicio">
+        <h2>Simulado de Legislação de Trânsito</h2>
+
+        <p>
+          Este simulado possui 30 questões mais desafiadoras sobre vias,
+          pontuação e PPD.
+        </p>
+
+        <p>
+          Leia cada questão com atenção. Algumas alternativas foram elaboradas
+          para testar detalhes importantes da matéria.
+        </p>
+
+        <button class="btn-principal" onclick="iniciarSimulado()">
+          Iniciar Simulado Difícil
+        </button>
+      </section>
+
+      <!-- TELA DO SIMULADO -->
+      <section id="tela-simulado" class="tela oculto">
+        <div class="progresso" id="progresso"></div>
+        <div class="tema" id="tema"></div>
+        <div class="pergunta" id="pergunta"></div>
+        <div class="alternativas" id="alternativas"></div>
+        <div class="mensagem" id="mensagem"></div>
+
+        <button id="botao-avancar" class="btn-principal" onclick="avancar()">
+          Próxima
+        </button>
+      </section>
+
+      <!-- TELA DE RESULTADO -->
+      <section id="tela-resultado" class="tela resultado oculto">
+        <h2>Resultado do Simulado Difícil</h2>
+
+        <div class="resultado-numero" id="porcentagem"></div>
+
+        <p id="acertos"></p>
+        <p id="total"></p>
+
+        <div class="revisao">
+          <h2>Revisão das respostas</h2>
+          <div id="revisao"></div>
+        </div>
+
+        <button class="btn-principal" onclick="novoSimulado()">
+          Fazer Novo Simulado Difícil
+        </button>
+      </section>
+    </main>
+
+    <script>
+      const questoes = [
+        // =========================
+        // VIAS
+        // =========================
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Uma via urbana conecta diferentes regiões da cidade, possui grande fluxo de veículos e apresenta cruzamentos em nível. Essa via é classificada como:",
+          alternativas: [
+            "Via local",
+            "Via arterial",
+            "Via de trânsito rápido",
+            "Via coletora",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Uma rua predominantemente residencial, utilizada principalmente para acesso direto aos imóveis e às áreas locais, corresponde a uma:",
+          alternativas: [
+            "Via arterial",
+            "Via coletora",
+            "Via local",
+            "Via de trânsito rápido",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "Vias",
+          pergunta: "Qual é a principal função de uma via coletora?",
+          alternativas: [
+            "Distribuir o trânsito entre vias de maior e menor fluxo.",
+            "Ligar exclusivamente municípios diferentes.",
+            "Permitir somente o acesso a imóveis.",
+            "Impedir o trânsito de veículos pesados.",
+          ],
+          correta: 0,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Uma via caracterizada por não possuir cruzamentos em nível e por permitir acesso controlado às propriedades lindeiras corresponde a uma:",
+          alternativas: [
+            "Via local",
+            "Via coletora",
+            "Via arterial",
+            "Via de trânsito rápido",
+          ],
+          correta: 3,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Quando não houver sinalização regulamentadora diferente, a velocidade máxima apresentada na apostila para uma via arterial é de:",
+          alternativas: ["40 km/h", "50 km/h", "60 km/h", "80 km/h"],
+          correta: 2,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Segundo a classificação apresentada na apostila, qual alternativa diferencia corretamente rodovia e estrada?",
+          alternativas: [
+            "Rodovia é rural pavimentada e estrada é rural não pavimentada.",
+            "Rodovia é urbana e estrada é rural.",
+            "Rodovia é rural não pavimentada e estrada é rural pavimentada.",
+            "Ambas são necessariamente urbanas.",
+          ],
+          correta: 0,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Ao utilizar uma faixa de aceleração para entrar em uma via de maior fluxo, o condutor deve:",
+          alternativas: [
+            "Parar no final da faixa e aguardar uma oportunidade.",
+            "Acelerar gradualmente até atingir velocidade compatível e entrar com segurança.",
+            "Entrar imediatamente, mesmo obrigando outro veículo a frear.",
+            "Manter velocidade muito baixa até o final da faixa.",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Ao utilizar uma faixa de desaceleração para sair de uma via, o condutor deve:",
+          alternativas: [
+            "Reduzir gradualmente a velocidade após ingressar na faixa de desaceleração.",
+            "Frear bruscamente ainda na faixa principal.",
+            "Parar antes de entrar na faixa de desaceleração.",
+            "Acelerar para liberar rapidamente a via.",
+          ],
+          correta: 0,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "O trânsito sobre a calçada ou o acostamento para acessar um imóvel é permitido desde que o condutor:",
+          alternativas: [
+            "Utilize a calçada como faixa de circulação pelo menor tempo possível.",
+            "Reduza a velocidade, sinalize e verifique a presença de pedestres.",
+            "Estacione rapidamente antes de entrar no imóvel.",
+            "Tenha preferência sobre os pedestres.",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "Vias",
+          pergunta:
+            "Considerando as velocidades máximas padrão apresentadas na apostila para as vias urbanas, qual sequência está em ordem decrescente?",
+          alternativas: [
+            "Trânsito rápido, arterial, coletora e local.",
+            "Arterial, trânsito rápido, local e coletora.",
+            "Trânsito rápido, coletora, arterial e local.",
+            "Local, coletora, arterial e trânsito rápido.",
+          ],
+          correta: 0,
+        },
+
+        // =========================
+        // PONTUAÇÃO
+        // =========================
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Considerando a regra de suspensão por pontos no período de 12 meses, um condutor que possui duas ou mais infrações gravíssimas terá seu limite de suspensão atingido em:",
+          alternativas: ["20 pontos", "30 pontos", "40 pontos", "50 pontos"],
+          correta: 0,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Um condutor possui uma infração gravíssima registrada no período de 12 meses. O limite de suspensão por pontos será atingido em:",
+          alternativas: ["20 pontos", "30 pontos", "40 pontos", "50 pontos"],
+          correta: 1,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Um condutor não possui nenhuma infração gravíssima no período considerado. Nesse caso, o limite de suspensão por pontos é de:",
+          alternativas: ["20 pontos", "30 pontos", "40 pontos", "50 pontos"],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Segundo a apostila, a suspensão decorrente dos limites de pontos possui, em regra, duração de:",
+          alternativas: [
+            "1 a 3 meses",
+            "3 a 6 meses",
+            "6 meses a 1 ano",
+            "1 a 2 anos",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Em caso de reincidência no período de 12 meses, a suspensão por pontos possui duração indicada de:",
+          alternativas: [
+            "2 a 4 meses",
+            "4 a 8 meses",
+            "8 meses a 2 anos",
+            "2 a 3 anos",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Um condutor atingiu 20 pontos no período de 12 meses e não possui nenhuma infração gravíssima. Considerando apenas a regra de suspensão por pontos apresentada na apostila, essa situação:",
+          alternativas: [
+            "Já atinge automaticamente o limite de suspensão.",
+            "Atinge o limite somente se houver duas infrações gravíssimas.",
+            "Não atinge ainda o limite de suspensão por pontos.",
+            "Gera cassação automática.",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta: "Uma infração de natureza grave corresponde a:",
+          alternativas: ["3 pontos", "4 pontos", "5 pontos", "7 pontos"],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta: "Uma infração de natureza gravíssima corresponde a:",
+          alternativas: ["3 pontos", "4 pontos", "5 pontos", "7 pontos"],
+          correta: 3,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Um condutor atingiu 20 pontos no período de 12 meses, mas não possui nenhuma infração gravíssima. Qual limite deve ser considerado para a suspensão por pontos?",
+          alternativas: ["20 pontos", "30 pontos", "40 pontos", "50 pontos"],
+          correta: 2,
+        },
+
+        {
+          tema: "Pontuação",
+          pergunta:
+            "Assinale a associação correta entre a natureza da infração e sua pontuação:",
+          alternativas: [
+            "Leve = 4, média = 5, grave = 7, gravíssima = 3.",
+            "Leve = 3, média = 4, grave = 5, gravíssima = 7.",
+            "Leve = 3, média = 5, grave = 6, gravíssima = 7.",
+            "Leve = 2, média = 4, grave = 6, gravíssima = 8.",
+          ],
+          correta: 1,
+        },
+
+        // =========================
+        // PPD
+        // =========================
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Durante o período da PPD, qual situação está expressamente entre as que impedem a obtenção da CNH ou ACC em substituição?",
+          alternativas: [
+            "Cometer uma infração leve.",
+            "Cometer uma infração média isolada.",
+            "Cometer uma infração grave.",
+            "Não cometer nenhuma infração.",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Durante o período da PPD, o cometimento de uma infração gravíssima:",
+          alternativas: [
+            "É permitido se o condutor não atingir 20 pontos.",
+            "É permitido se não houver reincidência.",
+            "É incompatível com a regra apresentada para a PPD.",
+            "Só produz efeito após a emissão da CNH.",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Um condutor com PPD cometeu duas infrações médias durante o período. Considerando a regra apresentada na apostila, o ponto relevante é que ele:",
+          alternativas: [
+            "Cometeu duas infrações leves.",
+            "É reincidente em infração de natureza média.",
+            "Cometeu uma infração gravíssima.",
+            "Atingiu automaticamente 40 pontos.",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Considerando apenas as condições apresentadas na apostila, qual conjunto contém situações incompatíveis com a obtenção da CNH ou ACC ao final do período da PPD?",
+          alternativas: [
+            "Infração leve e nenhuma outra infração.",
+            "Infração média isolada e nenhuma outra infração.",
+            "Infração grave e reincidência em infração média.",
+            "Nenhuma infração e uma infração leve.",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Ao final do período da PPD, cumpridas as condições exigidas, poderá ser expedida:",
+          alternativas: [
+            "Somente uma nova PPD.",
+            "CNH ou ACC em substituição à PPD.",
+            "Somente uma PID.",
+            "Somente uma autorização temporária.",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Qual das situações abaixo é incompatível com as regras apresentadas para permanência na PPD?",
+          alternativas: [
+            "Nenhuma infração.",
+            "Uma infração leve.",
+            "Uma infração grave.",
+            "Uma infração média isolada.",
+          ],
+          correta: 2,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Um condutor com PPD cometeu uma infração média e, posteriormente, uma infração leve. Considerando a regra apresentada na apostila, a situação da infração média deve ser analisada principalmente quanto à:",
+          alternativas: [
+            "Reincidência em infração de natureza média.",
+            "Quantidade de quilômetros percorridos.",
+            "Categoria do veículo.",
+            "Velocidade máxima da via.",
+          ],
+          correta: 0,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Qual é a diferença relevante entre cometer uma única infração média e ser reincidente em infração média durante a PPD?",
+          alternativas: [
+            "Não existe diferença.",
+            "A reincidência em infração média está entre as situações proibidas pela regra apresentada.",
+            "A infração média isolada sempre gera cassação.",
+            "A infração média isolada é tratada como gravíssima.",
+          ],
+          correta: 1,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Cumpridas as condições do período da PPD, o documento correspondente poderá ser substituído por:",
+          alternativas: [
+            "CNH ou ACC, conforme o caso.",
+            "Somente RG.",
+            "Somente CRLV.",
+            "Somente PID.",
+          ],
+          correta: 0,
+        },
+
+        {
+          tema: "PPD",
+          pergunta:
+            "Qual alternativa reúne corretamente as condições apresentadas na apostila para o condutor durante o período da PPD?",
+          alternativas: [
+            "Pode cometer infração grave, desde que não cometa gravíssima.",
+            "Não pode cometer infração grave ou gravíssima nem ser reincidente em infração média.",
+            "Pode cometer qualquer infração, desde que não ultrapasse 40 pontos.",
+            "Só não pode cometer infração leve.",
+          ],
+          correta: 1,
+        },
+      ];
+
+      // =========================
+      // VARIÁVEIS DO SIMULADO
+      // =========================
+
+      let perguntaAtual = 0;
+      let respostas = [];
+      let respostaSelecionada = null;
+
+      // =========================
+      // INICIAR SIMULADO
+      // =========================
+
+      function iniciarSimulado() {
+        perguntaAtual = 0;
+        respostas = [];
+        respostaSelecionada = null;
+
+        document.getElementById("tela-inicio").classList.add("oculto");
+        document.getElementById("tela-resultado").classList.add("oculto");
+        document.getElementById("tela-simulado").classList.remove("oculto");
+
+        mostrarQuestao();
+      }
+
+      // =========================
+      // MOSTRAR QUESTÃO
+      // =========================
+
+      function mostrarQuestao() {
+        const questao = questoes[perguntaAtual];
+
+        document.getElementById("progresso").textContent =
+          `Questão ${perguntaAtual + 1} de ${questoes.length}`;
+
+        document.getElementById("tema").textContent = `Tema: ${questao.tema}`;
+
+        document.getElementById("pergunta").textContent = questao.pergunta;
+
+        document.getElementById("mensagem").textContent = "";
+
+        const container = document.getElementById("alternativas");
+        container.innerHTML = "";
+
+        respostaSelecionada = null;
+
+        questao.alternativas.forEach((alternativa, indice) => {
+          const botao = document.createElement("button");
+
+          botao.textContent = `${String.fromCharCode(65 + indice)}) ${alternativa}`;
+
+          botao.classList.add("alternativa");
+
+          botao.onclick = function () {
+            selecionarAlternativa(indice, botao);
+          };
+
+          container.appendChild(botao);
+        });
+
+        const botaoAvancar = document.getElementById("botao-avancar");
+
+        if (perguntaAtual === questoes.length - 1) {
+          botaoAvancar.textContent = "Finalizar Simulado";
+        } else {
+          botaoAvancar.textContent = "Próxima";
+        }
+      }
+
+      // =========================
+      // SELECIONAR ALTERNATIVA
+      // =========================
+
+      function selecionarAlternativa(indice, botao) {
+        respostaSelecionada = indice;
+
+        const botoes = document.querySelectorAll(".alternativa");
+
+        botoes.forEach((item) => {
+          item.classList.remove("selecionada");
+        });
+
+        botao.classList.add("selecionada");
+
+        document.getElementById("mensagem").textContent = "";
+      }
+
+      // =========================
+      // AVANÇAR
+      // =========================
+
+      function avancar() {
+        if (respostaSelecionada === null) {
+          document.getElementById("mensagem").textContent =
+            "Selecione uma alternativa antes de continuar.";
+          return;
+        }
+
+        respostas.push({
+          pergunta: perguntaAtual,
+          resposta: respostaSelecionada,
+        });
+
+        if (perguntaAtual === questoes.length - 1) {
+          finalizarSimulado();
+          return;
+        }
+
+        perguntaAtual++;
+        mostrarQuestao();
+      }
+
+      // =========================
+      // FINALIZAR
+      // =========================
+
+      function finalizarSimulado() {
+        let acertos = 0;
+
+        respostas.forEach((item) => {
+          const questao = questoes[item.pergunta];
+
+          if (item.resposta === questao.correta) {
+            acertos++;
+          }
+        });
+
+        const porcentagem = Math.round((acertos / questoes.length) * 100);
+
+        document.getElementById("tela-simulado").classList.add("oculto");
+
+        document.getElementById("tela-resultado").classList.remove("oculto");
+
+        document.getElementById("porcentagem").textContent = `${porcentagem}%`;
+
+        document.getElementById("acertos").textContent =
+          `Você acertou ${acertos} de ${questoes.length} questões.`;
+
+        document.getElementById("total").textContent =
+          `Erros: ${questoes.length - acertos} questões.`;
+
+        mostrarRevisao();
+      }
+
+      // =========================
+      // REVISÃO
+      // =========================
+
+      function mostrarRevisao() {
+        const container = document.getElementById("revisao");
+        container.innerHTML = "";
+
+        questoes.forEach((questao, indice) => {
+          const resposta = respostas[indice].resposta;
+          const acertou = resposta === questao.correta;
+
+          const bloco = document.createElement("div");
+          bloco.classList.add("questao-revisao");
+
+          const titulo = document.createElement("h3");
+          titulo.textContent = `Questão ${indice + 1} - ${questao.tema}`;
+
+          const pergunta = document.createElement("p");
+          pergunta.textContent = questao.pergunta;
+
+          const respostaUsuario = document.createElement("p");
+          respostaUsuario.classList.add("resposta-usuario");
+
+          respostaUsuario.innerHTML = `<strong>Sua resposta:</strong> ${questao.alternativas[resposta]}`;
+
+          const respostaCorreta = document.createElement("p");
+          respostaCorreta.classList.add("resposta-correta");
+
+          respostaCorreta.innerHTML = `<strong>Resposta correta:</strong> ${questao.alternativas[questao.correta]}`;
+
+          if (acertou) {
+            respostaUsuario.classList.add("correta");
+          } else {
+            respostaUsuario.classList.add("incorreta");
+          }
+
+          bloco.appendChild(titulo);
+          bloco.appendChild(pergunta);
+          bloco.appendChild(respostaUsuario);
+          bloco.appendChild(respostaCorreta);
+
+          container.appendChild(bloco);
+        });
+      }
+
+      // =========================
+      // NOVO SIMULADO
+      // =========================
+
+      function novoSimulado() {
+        document.getElementById("tela-resultado").classList.add("oculto");
+
+        document.getElementById("tela-inicio").classList.remove("oculto");
+      }
+    </script>
+  </body>
+</html>
